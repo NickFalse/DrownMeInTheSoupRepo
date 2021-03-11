@@ -1,6 +1,9 @@
 package nickPlayerA;
-
-public class Vaporator extends Robot{
+import battlecode.common.*;
+public class Vaporator extends Building{
+    Vaporator(RobotController rc){
+        this.rc = rc;
+    }
     public void run(){
 
     }
