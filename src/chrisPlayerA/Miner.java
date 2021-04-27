@@ -36,7 +36,19 @@ public class Miner extends Unit {
             return false;
         }
     }
-    public void run(){
+
+    boolean nearbyRobot(RobotType target) throws GameActionException{
+        RobotInfo[] robots = rc.senseNearbyRobots();
+
+        for(RobotInfo r : robots) {
+            if(r.getType() == target){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void run() throws GameActionException {
 
         //Miner searching for HQ
         if (hqLoc == null){
@@ -48,23 +60,31 @@ public class Miner extends Unit {
             }
         }
 
+        if (!nearbyRobot(RobotType.DESIGN_SCHOOL)) {
+            if (tryBuild(RobotType.DESIGN_SCHOOL, randomDirection())) {
+                System.out.println("Successfully Built a design school!");
+            }
+        }
+
         //Miner moving to HQ
-        Direction hqPath = rc.getLocation().directionTo(hqLoc);
-        if(tryMove(hqPath)){
+        if(rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
+            Direction hqPath = rc.getLocation().directionTo(hqLoc);
+            tryMove(hqPath);
             System.out.println("Heading towards HQ!");
-        } else {
+            } else {
             tryMove(randomDirection());
             System.out.println("Moving in random direction");
+            }
         }
 
 
 
-
+    /*
         //this.tryMove(randomDirection());
         //if (tryMove(randomDirection()))
             //System.out.println("I moved!");
         // tryBuild(randomSpawnedByMiner(), randomDirection());
-        for (Direction dir : directions)
+        /*for (Direction dir : directions)
             tryBuild(RobotType.FULFILLMENT_CENTER, dir);
         for (Direction dir : directions)
             if (tryRefine(dir))
@@ -72,5 +92,6 @@ public class Miner extends Unit {
         for (Direction dir : directions)
             if (this.tryMine(dir))
                 System.out.println("I mined soup! " + rc.getSoupCarrying());
+
+         */
     }
-}

@@ -33,5 +33,5 @@ public abstract class Robot {
     static Direction randomDirection() {
         return directions[(int) (Math.random() * directions.length)];
     }
-    abstract void run();
+    abstract void run() throws GameActionException;
 }
