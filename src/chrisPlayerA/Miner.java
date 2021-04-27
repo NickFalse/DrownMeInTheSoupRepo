@@ -92,6 +92,6 @@ public class Miner extends Unit {
         for (Direction dir : directions)
             if (this.tryMine(dir))
                 System.out.println("I mined soup! " + rc.getSoupCarrying());
-
+        wniufgniuwenufiweunif
          */
     }
