@@ -48,9 +48,7 @@ public class Miner extends Unit {
         return false;
     }
 
-    public void run() throws GameActionException {
-
-        //Miner searching for HQ
+    public void findHQ(){
         if (hqLoc == null){
             RobotInfo[] robots = rc.senseNearbyRobots();
             for(RobotInfo robot : robots){
@@ -59,10 +57,34 @@ public class Miner extends Unit {
                 }
             }
         }
+    }
+
+    public void run() throws GameActionException {
+
+        //Miner searching for HQ
+        findHQ();
 
         if (!nearbyRobot(RobotType.DESIGN_SCHOOL)) {
             if (tryBuild(RobotType.DESIGN_SCHOOL, randomDirection())) {
                 System.out.println("Successfully Built a design school!");
+            }
+        }
+
+        if (!nearbyRobot(RobotType.FULFILLMENT_CENTER)) {
+            if (tryBuild(RobotType.FULFILLMENT_CENTER, randomDirection())) {
+                System.out.println("Successfully Built a fulfillment center!");
+            }
+        }
+
+        if (!nearbyRobot(RobotType.REFINERY)) {
+            if (tryBuild(RobotType.REFINERY, randomDirection())) {
+                System.out.println("Successfully Built a Refinery!");
+            }
+        }
+
+        if (!nearbyRobot(RobotType.NET_GUN)) {
+            if (tryBuild(RobotType.NET_GUN, randomDirection())) {
+                System.out.println("Successfully Built a Net Gun!");
             }
         }
 
@@ -71,27 +93,9 @@ public class Miner extends Unit {
             Direction hqPath = rc.getLocation().directionTo(hqLoc);
             tryMove(hqPath);
             System.out.println("Heading towards HQ!");
-            } else {
+        } else {
             tryMove(randomDirection());
             System.out.println("Moving in random direction");
-            }
         }
-
-
-
-    /*
-        //this.tryMove(randomDirection());
-        //if (tryMove(randomDirection()))
-            //System.out.println("I moved!");
-        // tryBuild(randomSpawnedByMiner(), randomDirection());
-        /*for (Direction dir : directions)
-            tryBuild(RobotType.FULFILLMENT_CENTER, dir);
-        for (Direction dir : directions)
-            if (tryRefine(dir))
-                System.out.println("I refined soup! " + rc.getTeamSoup());
-        for (Direction dir : directions)
-            if (this.tryMine(dir))
-                System.out.println("I mined soup! " + rc.getSoupCarrying());
-        wniufgniuwenufiweunif
-         */
     }
+}
