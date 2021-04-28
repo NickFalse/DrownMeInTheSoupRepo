@@ -10,6 +10,7 @@ public class FulfillmentCenter extends Building {
         for (Direction dir : directions){
             if(rc.getTeamSoup() > 150) {
                 tryBuild(RobotType.DELIVERY_DRONE, dir);
+                System.out.println("Successfully built a drone!");
             }
         }
     }
