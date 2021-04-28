@@ -12,6 +12,8 @@ public class Miner extends Unit {
         return spawnedByMiner[(int) (Math.random() * spawnedByMiner.length)];
     }
     static MapLocation hqLoc;
+    static int numMiners = 0;
+
     boolean tryMine(Direction dir){
         try {
             if (rc.isReady() && rc.canMineSoup(dir)) {
