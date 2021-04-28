@@ -7,7 +7,10 @@ public class FulfillmentCenter extends Building {
         this.rc = rc;
     }
     public void run(){
-        for (Direction dir : directions)
-            this.tryBuild(RobotType.DELIVERY_DRONE, dir);
+        for (Direction dir : directions){
+            if(rc.getTeamSoup() > 150) {
+                tryBuild(RobotType.DELIVERY_DRONE, dir);
+            }
+        }
     }
 }

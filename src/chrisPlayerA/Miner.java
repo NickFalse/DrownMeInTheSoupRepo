@@ -60,22 +60,25 @@ public class Miner extends Unit {
     }
 
     public void run() throws GameActionException {
-
+        int numFulCenter = 0;
         //Miner searching for HQ
         findHQ();
-
+        /*
         if (!nearbyRobot(RobotType.DESIGN_SCHOOL)) {
             if (tryBuild(RobotType.DESIGN_SCHOOL, randomDirection())) {
                 System.out.println("Successfully Built a design school!");
             }
         }
-
-        if (!nearbyRobot(RobotType.FULFILLMENT_CENTER)) {
-            if (tryBuild(RobotType.FULFILLMENT_CENTER, randomDirection())) {
-                System.out.println("Successfully Built a fulfillment center!");
+        */
+        while(numFulCenter < 1) {
+                if (!nearbyRobot(RobotType.FULFILLMENT_CENTER)) {
+                    if (tryBuild(RobotType.FULFILLMENT_CENTER, randomDirection())) {
+                        numFulCenter++;
+                        System.out.println("Successfully Built a fulfillment center!");
+                    }
+                }
             }
-        }
-
+        /*
         if (!nearbyRobot(RobotType.REFINERY)) {
             if (tryBuild(RobotType.REFINERY, randomDirection())) {
                 System.out.println("Successfully Built a Refinery!");
@@ -87,7 +90,7 @@ public class Miner extends Unit {
                 System.out.println("Successfully Built a Net Gun!");
             }
         }
-
+        */
         //Miner moving to HQ
         if(rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
             Direction hqPath = rc.getLocation().directionTo(hqLoc);
