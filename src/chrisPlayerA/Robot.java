@@ -5,8 +5,11 @@ import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
 
+import java.util.Random;
+
 public abstract class Robot {
     RobotController rc;
+    static Random random;
     static Direction[] directions = {
             Direction.NORTH,
             Direction.NORTHEAST,
@@ -17,6 +20,10 @@ public abstract class Robot {
             Direction.WEST,
             Direction.NORTHWEST
     };
+
+    Robot(){
+        random = new Random();
+    }
 
     boolean tryBuild(RobotType type, Direction dir){
         try {
