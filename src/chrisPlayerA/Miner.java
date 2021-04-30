@@ -9,7 +9,9 @@ public class Miner extends Unit {
     static MapLocation hqLoc;
     //    static int numMiners = 0;
     static int numDesignSchools = 0;
+    static int fufCount = 0;
     static boolean needToAnnounce = false;
+    static boolean needToAnnounceFuf = false;
 
     Miner(RobotController rc) {
         this.rc = rc;
@@ -40,13 +42,50 @@ public class Miner extends Unit {
         }
     }
 
-    void blockchainAddDesignSchool() throws GameActionException {
+    void addFuf() throws GameActionException {
+        int[] message = new int[7];
+        message[0] = secretNumba;
+        //69 is our key for new design school
+        message[1] = 69;
+        if (rc.canSubmitTransaction(message, 5)) {
+            rc.submitTransaction(message, 5);
+            needToAnnounceFuf = false;
+        }
+        else{
+            needToAnnounceFuf = true;
+        }
+    }
+
+    int countFuf() throws GameActionException {
+        int fufCount = 0;
+        if(needToAnnounceFuf){
+            addFuf();
+            fufCount++;
+        }
+        int numRounds = rc.getRoundNum();
+        for (int i = 1; i < numRounds; i++) {
+            for (Transaction tx : rc.getBlock(i)) {
+                int[] message = tx.getMessage();
+                if (message[0] == secretNumba && message[1] == 69) {
+                    fufCount++;
+                }
+            }
+        }
+        System.out.println("Counted " + fufCount +  "fufillment centers");
+        return fufCount;
+    }
+
+
+    void blockchainAddDesignSchool(MapLocation loc) throws GameActionException {
         int[] message = new int[7];
         message[0] = secretNumba;
         //1 is our key for new design school
         message[1] = 1;
+        message[2] = loc.x;
+        message[3] = loc.y;
         if (rc.canSubmitTransaction(message, 5)) {
             rc.submitTransaction(message, 5);
+            needToAnnounce = false;
         }
         else{
             needToAnnounce = true;
@@ -56,7 +95,7 @@ public class Miner extends Unit {
     int countDesignSchools() throws GameActionException {
         int designSchoolCount = 0;
         if(needToAnnounce){
-            blockchainAddDesignSchool();
+            blockchainAddDesignSchool(rc.getLocation());
             designSchoolCount++;
         }
         int numRounds = rc.getRoundNum();
@@ -131,15 +170,23 @@ public class Miner extends Unit {
             }
         }
 
-
+        //We first spawn a fufillment center to get a rush drone.
+        fufCount = countFuf();
+        if(fufCount < 1){
+            Direction d = randomDirection();
+            if (rc.isReady() && rc.canBuildRobot(RobotType.FULFILLMENT_CENTER, d)) {
+                rc.buildRobot(RobotType.FULFILLMENT_CENTER, d);
+                addFuf();
+            }
+        }
 
         //We try to make two design schools asap to start building walls.
         numDesignSchools = countDesignSchools();
-        if (numDesignSchools < 2) {
+        if (numDesignSchools < 1) {
             Direction d = randomDirection();
             if (rc.isReady() && rc.canBuildRobot(RobotType.DESIGN_SCHOOL, d)) {
                 rc.buildRobot(RobotType.DESIGN_SCHOOL, d);
-                blockchainAddDesignSchool();
+                blockchainAddDesignSchool(rc.getLocation().add(d));
             }
         }
 

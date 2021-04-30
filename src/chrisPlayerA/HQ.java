@@ -28,7 +28,7 @@ public class HQ extends Building {
             }
 
         }
-        if(numMiners < 5) {
+        if(numMiners < 4) {
             for (Direction dir : directions)
                 if (this.tryBuild(RobotType.MINER, dir)) {
                     numMiners++;

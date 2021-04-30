@@ -45,6 +45,27 @@ public abstract class Unit extends Robot {
 
         return false;
     }
+
+    boolean tryMoveDrone(Direction dir) throws GameActionException {
+        if (rc.isReady() && rc.canMove(dir)) {
+            rc.move(dir);
+            System.out.println("Moved sucessfully");
+            return true;
+        } else if (rc.isReady()) {
+            for (int i = 0; i < 7; i++) {
+                Direction toMove = dir.rotateRight();
+                if (rc.canMove(toMove)) {
+                    rc.move(toMove);
+                    System.out.println("Path blocked, moving " + dir.toString());
+                    return true;
+                }
+                dir = toMove;
+            }
+            System.out.println("Move failed.");
+        }
+
+        return false;
+    }
 }
 
 

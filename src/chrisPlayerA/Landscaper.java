@@ -11,6 +11,8 @@ public class Landscaper extends Unit {
         this.rc = rc;
     }
 
+    static boolean cheater = false;
+
     //Looks through the blockchain for the HQ broadcast message
     public void findHQ() throws GameActionException {
         if (hqLoc == null) {
@@ -42,6 +44,27 @@ public class Landscaper extends Unit {
         if (hqLoc == null) findHQ();
 
         MapLocation ourLocation = rc.getLocation();
+
+        if(rc.isReady()){
+        //We see if we are adjacent to the enemy hq.
+        RobotInfo[] enemyHQLook = rc.senseNearbyRobots(4);
+        //We we find the enemy hq, we dig from opposite us to ontop of it
+        for(RobotInfo r : enemyHQLook){
+            if(!r.team.equals(rc.getTeam())  && r.type == RobotType.HQ){
+                Direction enemyDirection = rc.getLocation().directionTo(r.location);
+                if(rc.getDirtCarrying() > 1){
+                    if(rc.canDepositDirt(enemyDirection)){
+                        rc.depositDirt(enemyDirection);
+                    }
+                }
+                else{
+                    if(rc.canDigDirt(r.location.directionTo(ourLocation))){
+                        rc.digDirt(r.location.directionTo(ourLocation));
+                    }
+                }
+            }
+        }
+}
 
         //We try to move adjacent to the hq to start building the wall
         if (!ourLocation.isAdjacentTo(hqLoc)) {
