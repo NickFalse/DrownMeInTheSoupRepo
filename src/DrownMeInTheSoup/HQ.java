@@ -1,8 +1,6 @@
-package chrisPlayerA;
+package DrownMeInTheSoup;
 
 import battlecode.common.*;
-
-import static chrisPlayerA.Unit.secretNumba;
 
 public class HQ extends Building {
     static int numMiners = 0;
@@ -16,7 +14,7 @@ public class HQ extends Building {
     public void run() throws GameActionException {
         if(!startupMessage){
             int[] message = new int[7];
-            message[0] = secretNumba;
+            message[0] = Unit.secretNumba;
             //Zero is our key for HQ location.
             message[1] = 0;
             MapLocation location = rc.getLocation();

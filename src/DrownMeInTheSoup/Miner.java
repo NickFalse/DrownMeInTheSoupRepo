@@ -1,8 +1,6 @@
-package chrisPlayerA;
+package DrownMeInTheSoup;
 
 import battlecode.common.*;
-
-import java.util.Random;
 
 public class Miner extends Unit {
     static RobotType[] spawnedByMiner = {RobotType.REFINERY, RobotType.VAPORATOR, RobotType.DESIGN_SCHOOL, RobotType.FULFILLMENT_CENTER, RobotType.NET_GUN};
@@ -24,6 +22,34 @@ public class Miner extends Unit {
     static Direction randomDirection() {
         Direction direction = directions[random.nextInt(8)];
         return direction;
+    }
+
+
+    public void annouceRefinery(MapLocation loc) throws GameActionException {
+        int[] message = new int[7];
+        message[0] = secretNumba;
+        //420 is our key for refinery
+        message[1] = 420;
+        message[2] = loc.x;
+        message[3] = loc.y;
+        if (rc.canSubmitTransaction(message, 5)) {
+            rc.submitTransaction(message, 5);
+        }
+    }
+
+    public MapLocation findRefinery() throws GameActionException {
+
+        int numRounds = rc.getRoundNum();
+        for (int i = 1; i < numRounds; i++) {
+            for (Transaction tx : rc.getBlock(i)) {
+                int[] message = tx.getMessage();
+                if (message[0] == secretNumba && message[1] == 420) {
+                    return new MapLocation(message[2], message[3]);
+                }
+            }
+
+        }
+        return null;
     }
 
     //Looks through the blockchain for the HQ broadcast message
@@ -55,6 +81,8 @@ public class Miner extends Unit {
             needToAnnounceFuf = true;
         }
     }
+
+
 
     int countFuf() throws GameActionException {
         int fufCount = 0;
@@ -154,12 +182,41 @@ public class Miner extends Unit {
             }
         }
 
-        //Miner moving to HQ if full.
+        //Miner moving to refinery of some kind  if full.
         if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
             Direction hqPath = rc.getLocation().directionTo(hqLoc);
             tryMove(hqPath);
             System.out.println("Heading towards HQ!");
         }
+//        if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
+//            //Check to see if a refinery exists
+//            MapLocation refinery = findRefinery();
+//
+//            //If it doesn't and we are full, we make one
+//            if(refinery == null){
+//                if(rc.isReady()){
+//                    Direction d = Direction.NORTH;
+//                    for(int i = 0; i < 8; i++){
+//                        if(rc.canBuildRobot(RobotType.REFINERY, d)){
+//                            rc.buildRobot(RobotType.REFINERY, d);
+//                            annouceRefinery(rc.getLocation().add(d));
+//                        }
+//                    }
+//                }
+//            }
+//
+//            //Otherwise we go to the closest one.
+//            else if(rc.getLocation().distanceSquaredTo(hqLoc) > rc.getLocation().distanceSquaredTo(refinery)) {
+//                Direction hqPath = rc.getLocation().directionTo(hqLoc);
+//                tryMove(hqPath);
+//                System.out.println("Heading towards HQ!");
+//            }
+//            else{
+//                Direction refPath = rc.getLocation().directionTo(refinery);
+//                tryMove(refPath);
+//                System.out.println("Heading towards refinery!");
+//            }
+//        }
 
         //Otherwise we see if we are in a location where we can actually mine the soup.
         for (Direction d : directions) {
@@ -190,13 +247,23 @@ public class Miner extends Unit {
             }
         }
 
+        MapLocation myLoc = rc.getLocation();
 
         if (rc.getSoupCarrying() != RobotType.MINER.soupLimit) {
             //Next we try to sense any soup we can, if there is soup nearby, and we aren't mining, we move towards it.
             MapLocation[] soupLocations = rc.senseNearbySoup();
             if (soupLocations.length != 0) {
+                int distance = Integer.MAX_VALUE;
+                MapLocation closest = null;
+                for(MapLocation m : soupLocations){
+                    int dist = m.distanceSquaredTo(myLoc);
+                    if(dist < distance){
+                        closest = m;
+                        distance = dist;
+                    }
+                }
                 System.out.println("Sensed soup, going there to mine");
-                tryMove(rc.getLocation().directionTo(soupLocations[0]));
+                tryMove(rc.getLocation().directionTo(closest));
             } else {
                 //Otherwise we scan the blockchain for the most recent soup location:
                 MapLocation soupFromChain = findMostRecentSoup();

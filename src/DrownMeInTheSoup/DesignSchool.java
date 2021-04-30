@@ -1,8 +1,6 @@
-package chrisPlayerA;
+package DrownMeInTheSoup;
 
 import battlecode.common.*;
-
-import static chrisPlayerA.Unit.secretNumba;
 
 public class DesignSchool extends Building {
     DesignSchool(RobotController rc){
@@ -11,7 +9,7 @@ public class DesignSchool extends Building {
 
     void createLandscaper() throws GameActionException {
         int[] message = new int[7];
-        message[0] = secretNumba;
+        message[0] = Unit.secretNumba;
         //5 is our key for new design school
         message[1] = 5;
         if (rc.canSubmitTransaction(message, 5)) {
@@ -25,7 +23,7 @@ public class DesignSchool extends Building {
         for (int i = 1; i < numRounds; i++) {
             for (Transaction tx : rc.getBlock(i)) {
                 int[] message = tx.getMessage();
-                if (message[0] == secretNumba && message[1] == 5) {
+                if (message[0] == Unit.secretNumba && message[1] == 5) {
                     landscaperCount++;
                 }
             }

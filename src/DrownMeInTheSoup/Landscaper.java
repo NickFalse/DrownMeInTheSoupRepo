@@ -1,8 +1,6 @@
-package chrisPlayerA;
+package DrownMeInTheSoup;
 
 import battlecode.common.*;
-
-import java.lang.Math;
 
 public class Landscaper extends Unit {
     static MapLocation hqLoc;

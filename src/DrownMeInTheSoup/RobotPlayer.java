@@ -1,4 +1,4 @@
-package chrisPlayerA;
+package DrownMeInTheSoup;
 import battlecode.common.*;
 
 public strictfp class RobotPlayer {
